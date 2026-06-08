@@ -1,0 +1,14 @@
+# Compiled Java class files
+bin/
+*.class
+
+# Interview prompt (kept out of the public repo)
+Instructions.docx
+
+# Editor / tooling
+.claude/
+.vscode/
+
+# OS files
+Thumbs.db
+.DS_Store
