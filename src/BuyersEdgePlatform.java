@@ -1,4 +1,9 @@
 import java.io.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,16 +12,30 @@ import java.util.stream.Collectors;
 public class BuyersEdgePlatform {
     public static void main(String[] args) throws Exception {
         HashMap<String, ProductList> products = new HashMap<>();
-        String libDirPath = System.getProperty("user.dir") + "\\JerryHollands_BuyersEdgePlatformProject\\lib\\";
-        String inputDirPath = libDirPath + "input\\";
-        String outputDirPath = libDirPath + "output\\";
-        File inputDir = new File(inputDirPath);
+        Path libDir = resolveLibDir();
+        File inputDir = libDir.resolve("input").toFile();
+        String outputDirPath = libDir.resolve("output").toString() + File.separator;
         for (File input : inputDir.listFiles()) {
             readContractFile(input, products);
         }
         outputComparisonResults(products);
         outputResultSummary(products);
         exportResultsToCSV(products, outputDirPath);
+    }
+
+    // Locate the lib directory relative to the compiled classes rather than the current working
+    // directory, so the program runs the same regardless of where it is launched from or which OS
+    // it runs on. The code source location is the classpath root (the bin directory when run with
+    // -cp bin), and lib is its sibling. Falls back to ./lib if the location cannot be determined.
+    private static Path resolveLibDir() throws URISyntaxException {
+        URL location = BuyersEdgePlatform.class.getProtectionDomain().getCodeSource().getLocation();
+        if (location != null) {
+            Path candidate = Paths.get(location.toURI()).getParent().resolve("lib");
+            if (Files.isDirectory(candidate)) {
+                return candidate;
+            }
+        }
+        return Paths.get(System.getProperty("user.dir"), "lib");
     }
 
     private static void readContractFile(File input, HashMap<String, ProductList> products) {

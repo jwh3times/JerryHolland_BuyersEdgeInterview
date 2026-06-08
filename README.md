@@ -64,13 +64,13 @@ Product Code,Davidson Produce Price,Fox Foods Price,Roberts Fresh Food Price,Tho
 
 Requires JDK 17+ (the code uses switch expressions with arrow labels).
 
-The program resolves its input/output paths relative to the **parent** of the project
-folder, so compile and run from one directory above the project root:
+The program locates its `lib/` directory relative to the compiled classes, so it can be run
+from any working directory:
 
 ```sh
-# From the directory that contains JerryHollands_BuyersEdgePlatformProject/
-javac -d JerryHollands_BuyersEdgePlatformProject/bin JerryHollands_BuyersEdgePlatformProject/src/*.java
-java  -cp JerryHollands_BuyersEdgePlatformProject/bin BuyersEdgePlatform
+# From the project root
+javac -d bin src/*.java
+java  -cp bin BuyersEdgePlatform
 ```
 
 The comparison prints to the console and the generated CSV is written to
